@@ -1,0 +1,72 @@
+square live hackathon:
+
+apis list:
+	user api:
+		Get /api/user/ collection of all user deatils
+		post /api/user/ signup for new user
+		Get /api/user/<user-id> single user deatils
+		patch /api/user/<user-id> user password update or user name update for pariticular id
+		delete /api/user/<user-id> delete the user details
+		
+	audiobook api:
+		Get /api/audiobook collection of all audiobook deatils
+		Post /api/audiobook upload new audiobook(accpect only mp3 format) (user will update in uploaded_by)
+		Post /api/audiobook/converter upload and covert the pdf to audiobook (accpect only pdf) (user will update in uploaded_by)
+		get /api/audiobook/<audiobook-name/id> get details of audiobook details along with ipfs link(in UI download button will have this link)
+		patch /api/audiobook/<audiobook-name/id> edit the details of audiobook. user can edit only title and premium or non-premium (only uploaded user can do this)
+		delete /api/audiobook/<audiobook-name/id> delete the audiobook.
+		(only uploaded user can edit/delete)
+		
+database tables(consider for psql):
+
+	user table:
+		id (primary key)
+		user-id (id ref for user)
+		user-name (name of the user)
+		password (encrypted)
+		premium-user (bool)
+		created-time
+		updated-time
+	
+	audiobook table:
+		id (primary key)
+		title (get from user or pdf file name as title)
+		pdf-link 
+		audiobook-link
+		premium (bool)
+		type-of-storage (nft/ipfs/web3...etc)
+		uploaded_time
+		status (started/converting/uploading/uploaded)
+		
+post /api/user/ signup for new user
+request body 
+{
+	"user-id" = "",
+	'username = '',
+	'password' = '',
+	preminum-user = True,
+	
+}
+post /api/audiobook
+request body form data
+{
+	audiobook: iodata,
+	pdf: pdf,
+	title: sometitle
+	premium: true
+	type_of_storage: nft
+}
+post /api/audiobook/convert
+request body form data
+{
+	pdf: pdf,
+	title: sometitle
+	premium: true
+	type_of_storage: nft
+}
+patch /api/audiobook/<>
+request body 
+{
+	title: "som",
+	"premium": true
+}
