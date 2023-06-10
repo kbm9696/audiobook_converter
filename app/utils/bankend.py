@@ -12,7 +12,7 @@ class ConvertAndUpload:
     def __init__(self):
         self.dba = AudiobookDba()
 
-    def convert_pdf_to_audiobook(self, file_name, aid):
+    def convert_pdf_to_audiobook(self, file_name, aid,  storage_type, api_key):
         try:
             engine = pyttsx3.init()
             book = open(file_name, 'rb')
@@ -33,17 +33,24 @@ class ConvertAndUpload:
             engine.save_to_file(text, tmp_file)
             engine.runAndWait()
             print('convert done')
-            self.upload_audiobook(tmp_file, aid)
+            self.upload_audiobook(tmp_file, aid,  storage_type, api_key)
         except Exception as e:
             print(f'Got Exception while convert pdf to mp3 : {e}')
 
-    def upload_audiobook(self, file, aid):
+    def upload_audiobook(self, file, aid, storage_type, api_key):
         try:
             self.dba.update_status(aid, 'uploading')
             print('uploading')
             ipfs_api = IPFS()
-            res = ipfs_api.upload_nft_storage(apikey=ipfs_token, file=file)
-            ipfs_hash = res.get('value').get('cid')
+            # res = ipfs_api.upload_nft_storage(apikey=ipfs_token, file=file)
+            ipfs_hash = ''
+            if storage_type == 'nft':
+                res = ipfs_api.upload_nft_storage(apikey=api_key, file=file)
+                ipfs_hash = ipfs_api.nft_storage_download_link(res.get('value').get('cid'))
+            elif storage_type == 'web3':
+                res = ipfs_api.upload_web3_storage(apikey=api_key, file=file)
+                ipfs_hash = ipfs_api.web3_storage_download_link(res.get('cid'))
+            # ipfs_hash = res.get('value').get('cid')
             e = AudioBook()
             e.status = 'uploaded',
             e.audiobook_link = ipfs_hash
@@ -56,13 +63,20 @@ class ConvertAndUpload:
         except Exception as e:
             print('error while upload converted audiobook')
 
-    def upload_pdf(self, file, aid):
+    def upload_pdf(self, file, aid, storage_type, api_key):
         try:
             self.dba.update_status(aid, 'uploading')
             print('uploading')
             ipfs_api = IPFS()
-            res = ipfs_api.upload_nft_storage(apikey=ipfs_token, file=file)
-            ipfs_hash = res.get('value').get('cid')
+            ipfs_hash = ''
+            # res = ipfs_api.upload_nft_storage(apikey=ipfs_token, file=file)
+            if storage_type == 'nft':
+                res = ipfs_api.upload_nft_storage(apikey=api_key, file=file)
+                ipfs_hash = ipfs_api.nft_storage_download_link(res.get('value').get('cid'))
+            elif storage_type == 'web3':
+                res = ipfs_api.upload_web3_storage(apikey=api_key, file=file)
+                ipfs_hash = ipfs_api.web3_storage_download_link(res.get('cid'))
+            # ipfs_hash = res.get('value').get('cid')
             e = AudioBook()
             e.status = 'uploaded',
             e.pdf_link = ipfs_hash
@@ -75,15 +89,21 @@ class ConvertAndUpload:
         except Exception as e:
             print('error while upload converted audiobook')
 
-    def upload_all(self, files, aid):
+    def upload_all(self, files, aid, storage_type, api_key):
         try:
             self.dba.update_status(aid, 'uploading')
             data = {}
             print('uploading')
             for file in files:
                 ipfs_api = IPFS()
-                res = ipfs_api.upload_nft_storage(apikey=ipfs_token, file=file)
-                ipfs_hash = res.get('value').get('cid')
+                ipfs_hash = ''
+                if storage_type == 'nft':
+                    res = ipfs_api.upload_nft_storage(apikey=api_key, file=file)
+                    ipfs_hash = ipfs_api.nft_storage_download_link(res.get('value').get('cid'))
+                elif storage_type == 'web3':
+                    res = ipfs_api.upload_web3_storage(apikey=api_key, file=file)
+                    ipfs_hash = ipfs_api.web3_storage_download_link(res.get('cid'))
+                # ipfs_hash = res.get('value').get('cid')
                 if 'mp3' in file:
                     data['audiobook_link'] = ipfs_hash
                 if 'pdf' in file:
@@ -92,4 +112,5 @@ class ConvertAndUpload:
             self.dba.update_data(aid, data)
             print('uploaded')
         except Exception as e:
-            print('error while upload converted audiobook')
+            print('error while upload all')
+

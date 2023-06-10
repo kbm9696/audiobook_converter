@@ -47,12 +47,16 @@ class AudiobooksApi(Resource):
     def get(self):
         try:
             resp = {}
+
             audiobook_dba = AudiobookDba()
-            audiobook_collections = audiobook_dba.get_all_audiobooks()
+            start = request.args.get('start') if request.args.get('start') else 0
+            limit = request.args.get('limit') if request.args.get('limit') else 0
+            audiobook_collections = audiobook_dba.get_all_audiobooks(start=start,
+                                                                     limit=limit)
             resp = {
                 'description': 'audiobook collections',
                 'collections': audiobook_collections,
-                'count': len(audiobook_collections)
+                'count': audiobook_dba.total_count()
             }
             resp = jsonify(resp)
             resp.status_code = 200
@@ -81,6 +85,7 @@ class AudiobooksApi(Resource):
             audiobooks.title = req_data['title']
             audiobooks.premium = req_data['premium']
             audiobooks.type_of_storage = req_data['type_of_storage']
+            audiobooks.api_key_for_storage = req_data['api_key_for_storage']
             audiobooks.uploaded_by = get_current_user()
             # ipfs_api = IPFS()
             files = []
@@ -106,7 +111,8 @@ class AudiobooksApi(Resource):
             r = audiobook_dba.add(audiobooks)
             print("id", r)
             upld = ConvertAndUpload()
-            t = Thread(target=upld.upload_all, args=([files,r]))
+            t = Thread(target=upld.upload_all,
+                       args=(files,r,req_data['type_of_storage'],req_data['api_key_for_storage']))
             t.start()
             resp = jsonify(resp)
             resp.status_code = 201
@@ -219,7 +225,8 @@ class ConvertApi(Resource):
             audiobooks.pdf_link = ''
             r = audiobook_dba.add(audiobooks)
             cvrt = ConvertAndUpload()
-            t = Thread(target=cvrt.convert_pdf_to_audiobook, args=(tmp_file, r))
+            t = Thread(target=cvrt.convert_pdf_to_audiobook,
+                       args=(tmp_file, r,req_data['type_of_storage'],req_data['api_key_for_storage']))
             t.start()
             t1 = Thread(target=cvrt.upload_pdf, args=(tmp_file,r))
             t1.start()
@@ -233,3 +240,4 @@ class ConvertApi(Resource):
             resp = jsonify(response)
             resp.status_code = 400
             return resp
+

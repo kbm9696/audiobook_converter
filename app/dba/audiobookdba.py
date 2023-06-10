@@ -18,6 +18,7 @@ class AudioBook(Base):
     audiobook_link = Column(VARCHAR(200), nullable=False)
     premium = Column(Boolean, nullable=False)
     type_of_storage = Column(VARCHAR(200), nullable=False)
+    api_key_for_storage = Column(Text, nullable=False)
     status = Column(VARCHAR(200), nullable=False)
     uploaded_by = Column(VARCHAR(200), nullable=False)
     uploaded_on = Column(DateTime(timezone=True), default=func.now())
@@ -30,11 +31,18 @@ class AudiobookDba:
         self.session.configure(bind=engine)
         Base.metadata.create_all(engine)
 
-    def get_all_audiobooks(self):
+    def total_count(self):
+        s = self.session()
+        return s.query(AudioBook).count()
+
+    def get_all_audiobooks(self,start=0,limit=0):
         s = self.session()
         result = []
         try:
-            q = s.query(AudioBook).all()
+            if limit:
+                q = s.query(AudioBook).order_by(AudioBook.id).limit(limit).offset(start).all()
+            else:
+                q = s.query(AudioBook).order_by(AudioBook.id).all()
             for r in q:
                 temp = r.__dict__
                 temp.pop('_sa_instance_state')
@@ -94,6 +102,9 @@ class AudiobookDba:
                 user.premium = data["premium"]
             if "status" in data:
                 user.status = data["status"]
+            if "api_key_for_storage" in data:
+                user.api_key_for_storage = data["api_key_for_storage"]
+
             s.commit()
 
         except Exception as err:
