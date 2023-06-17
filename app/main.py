@@ -83,4 +83,4 @@ if __name__ == "__main__":
     # fh.suffix = '%Y_%m_%d.log'
     # logging.info("IPFS API Server")
     app.run(host='0.0.0.0',
-            port=9075, ssl_context=('/etc/certs/nginx-ca.crt','/etc/certs/nginx-ca.key'))
+            port=9075) #, ssl_context=('/etc/certs/nginx-ca.crt','/etc/certs/nginx-ca.key'))
