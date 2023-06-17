@@ -31,4 +31,4 @@ if __name__ == "__main__":
     fh.suffix = '%Y_%m_%d.log'
     gapp = GUnicornFlaskApplication(app)
     gapp.run(bind='{host}:{port}'.format(host='0.0.0.0', port=9075),
-             workers=5, proxy_protocol= False, keyfile=KEY_FILE, certfile=CERTS_FILE)
+             workers=5, proxy_protocol= False)  #, keyfile=KEY_FILE, certfile=CERTS_FILE)
