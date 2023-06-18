@@ -11,5 +11,6 @@ COPY db_conf.json /etc/db_conf.json
 COPY nginx-ca.crt /etc/certs/nginx-ca.crt
 COPY nginx-ca.key /etc/certs/nginx-ca.key
 COPY audiobook_converter /usr/local/bin/audiobook_converter
+RUN chmod + /usr/local/bin/audiobook_converter
 
 CMD ["/usr/local/bin/audiobook_converter"]
