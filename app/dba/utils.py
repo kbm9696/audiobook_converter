@@ -7,11 +7,11 @@ from jsonschema import validate
 
 DB_CONF = {
     "pgsql": {
-        "host": "192.168.1.9",
+        "host": "dpg-ci5jielgkuvh0tmd81tg-a.oregon-postgres.render.com",
         "port": 5432,
-        "user": "postgres",
-        "password": "9696",
-        "protocol": "postgresql+psycopg2"
+        "user": "fastapi",
+        "password": "xjOAmoeYgDderm2Af5DZgS3PCW9R7uwH",
+        "protocol": "postgresql"
     }
 }
 DB_CONF_FILE = '/etc/db_conf.json'
@@ -31,7 +31,7 @@ def load_database_configuration():
         logging.error('DBA Utils : Initialization Error! Unable to load database configuration')
 
 
-def build_db_string(database='audiobook_db'):
+def build_db_string(database='testdba'):
     # load_database_configuration()
     host = ''
     if DB_CONF.get('pgsql') and DB_CONF.get('pgsql').get('host'):
@@ -47,7 +47,8 @@ def build_db_string(database='audiobook_db'):
         port=DB_CONF['pgsql']['port'],
         db=database
     )
-    dburi = 'postgres://fastapi:xjOAmoeYgDderm2Af5DZgS3PCW9R7uwH@dpg-ci5jielgkuvh0tmd81tg-a.oregon-postgres.render.com:5432/testdba'
+    print('dbauri',dburi)
+    #dburi = 'postgres://fastapi:xjOAmoeYgDderm2Af5DZgS3PCW9R7uwH@dpg-ci5jielgkuvh0tmd81tg-a.oregon-postgres.render.com:5432/testdba'
     #dburi = 'postgres://fastapi:xjOAmoeYgDderm2Af5DZgS3PCW9R7uwH@dpg-ci5jielgkuvh0tmd81tg-a:5432/testdba'
     return dburi
 
