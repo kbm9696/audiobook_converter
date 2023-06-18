@@ -15,6 +15,7 @@ urllib3
 gunicorn
 jsonschema
 flask_jsontools
+psycopg2
 psycopg2-binary
 pyinstaller
 six
