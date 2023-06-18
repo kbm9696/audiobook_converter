@@ -46,6 +46,8 @@ class AudiobookDba:
             for r in q:
                 temp = r.__dict__
                 temp.pop('_sa_instance_state')
+                temp.pop('type_of_storage')
+                temp.pop('api_key_for_storage')
                 result.append(r.__dict__)
         except Exception as e:
             print(f'error while get all audiobook from dba{e}')
@@ -61,6 +63,8 @@ class AudiobookDba:
             if q:
                 result = q.__dict__
                 result.pop('_sa_instance_state')
+                result.pop('api_key_for_storage')
+                result.pop('type_of_storage')
         except Exception as e:
             print(f'error while get the audiobook id:{uid} from db {e}')
         finally:
