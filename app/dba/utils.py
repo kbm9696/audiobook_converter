@@ -47,6 +47,7 @@ def build_db_string(database='audiobook_db'):
         port=DB_CONF['pgsql']['port'],
         db=database
     )
+    dburi = 'postgres://fastapi:xjOAmoeYgDderm2Af5DZgS3PCW9R7uwH@dpg-ci5jielgkuvh0tmd81tg-a.oregon-postgres.render.com/testdba'
     return dburi
 
 
