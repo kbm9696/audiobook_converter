@@ -2,7 +2,7 @@ setuptools
 flask
 wheel
 flask_restful
-sqlalchemy
+sqlalchemy==2.0.15
 flask_api
 flask_migrate
 flask_sqlalchemy
