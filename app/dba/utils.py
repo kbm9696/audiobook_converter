@@ -48,6 +48,7 @@ def build_db_string(database='audiobook_db'):
         db=database
     )
     dburi = 'postgres://fastapi:xjOAmoeYgDderm2Af5DZgS3PCW9R7uwH@dpg-ci5jielgkuvh0tmd81tg-a.oregon-postgres.render.com/testdba'
+    dburi = 'postgres://fastapi:xjOAmoeYgDderm2Af5DZgS3PCW9R7uwH@dpg-ci5jielgkuvh0tmd81tg-a/testdba'
     return dburi
 
 
